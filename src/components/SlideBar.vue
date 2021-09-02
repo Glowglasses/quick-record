@@ -1,6 +1,8 @@
 <template>
   <div class="wrapper" ref="wrapper">
-    <div>头像</div>
+    <Avatar class="avatar">
+      <div>妙</div>
+    </Avatar>
     <router-link to="/noteId" active-class="selected">笔记本详情</router-link>
     <router-link to="/notebooks" active-class="selected">新建笔记本</router-link>
     <router-link to="/trash" active-class="selected">回收站</router-link>
@@ -13,8 +15,10 @@
 <script lang="ts">
 import Vue from 'vue';
 import {Component} from 'vue-property-decorator';
-
-@Component
+import Avatar from '@/components/Avatar.vue';
+@Component({
+  components: {Avatar}
+})
 export default class slideBar extends Vue {
   mounted() {
     let div = this.$refs.wrapper as HTMLDivElement;
@@ -25,11 +29,24 @@ export default class slideBar extends Vue {
 
 <style lang="scss" scoped>
 .wrapper {
-  width: 100px;
   position: relative;
   text-align: center;
   background-color: #2c333c;
   color: white;
+  > .avatar{
+    background-color: #f2b81c;
+    position: relative;
+    left: 50%;
+    transform: translateX(-50%);
+    padding-top: 5px;
+    padding-bottom: 5px;
+    > div{
+      position: absolute;
+      left: 50%;
+      bottom: 50%;
+      transform: translate(-50%,50%);
+    }
+  }
   > .logout {
     position: absolute;
     bottom: 30px;
