@@ -7,7 +7,7 @@ import Vue from 'vue';
 import {Component} from 'vue-property-decorator';
 
 @Component
-export default class TashDetail extends Vue {
+export default class TrashDetail extends Vue {
 
 }
 </script>

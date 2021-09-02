@@ -1,5 +1,6 @@
 <template>
   <div id="app">
+    <slide-bar/>
     <router-view/>
   </div>
 </template>
