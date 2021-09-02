@@ -4,11 +4,14 @@
     <router-view/>
   </div>
 </template>
-
-<style lang="scss" scoped>
-  @import "~@/assets/scss/reset.scss";
-  @import "~@/assets/scss/helper.scss";
-  body{
-    font: $font-song;
+<style lang="scss">
+  @import "~@/assets/style/helper.scss";
+  @import "~@/assets/style/reset.scss";
+  #app{
+    font: $font-hei;
+    font-size: $font-size;
+    display: flex;
+    flex-direction: column;
+    flex-wrap: nowrap;
   }
 </style>
