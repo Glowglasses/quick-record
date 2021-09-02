@@ -1,5 +1,5 @@
 <template>
-  <div></div>
+  <div>笔记本详情</div>
 </template>
 
 <script lang="ts">

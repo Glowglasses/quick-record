@@ -1,7 +1,7 @@
 <template>
   <div id="app">
     <slide-bar/>
-    <router-view/>
+    <router-view></router-view>
   </div>
 </template>
 <style lang="scss">
@@ -11,7 +11,7 @@
     font: $font-hei;
     font-size: $font-size;
     display: flex;
-    flex-direction: column;
+    flex-direction: row;
     flex-wrap: nowrap;
   }
 </style>

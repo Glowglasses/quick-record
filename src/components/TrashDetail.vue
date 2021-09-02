@@ -1,5 +1,5 @@
 <template>
-  <div></div>
+  <div class="wrapper">回收站</div>
 </template>
 
 <script lang="ts">
@@ -13,5 +13,7 @@ export default class TrashDetail extends Vue {
 </script>
 
 <style lang="scss" scoped>
-
+  .wrapper{
+    flex-grow: 1;
+  }
 </style>

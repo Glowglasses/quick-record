@@ -9,19 +9,19 @@ Vue.use(VueRouter);
 
 const routes: Array<RouteConfig> = [
   {
-    path: 'login',
+    path: '/login',
     component: Login
   },
   {
-    path: 'notebooks',
+    path: '/notebooks',
     component: NotebookList
   },
   {
-    path: 'noteId',
+    path: '/noteId',
     component: NoteDetail
   },
   {
-    path: 'trash:noteId',
+    path: '/trash',
     component: TrashDetail
   }
 ];
