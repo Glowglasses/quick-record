@@ -9,6 +9,10 @@ Vue.use(VueRouter);
 
 const routes: Array<RouteConfig> = [
   {
+    path: '/',
+    component: Login
+  },
+  {
     path: '/login',
     component: Login
   },
