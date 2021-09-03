@@ -1,5 +1,5 @@
 <template>
-  <div id="login">
+  <div id="login" v-if="isVisibleLogin">
     <div class="modal-mask">
       <div class="modal-wrapper">
         <div class="modal-container">
@@ -34,14 +34,19 @@
 <script lang="ts">
 import Vue from 'vue';
 import {Component} from 'vue-property-decorator';
-
+import auth from '@/apis/auth';
 @Component
 export default class Login extends Vue {
   isShowLogin = true;
   isShowRegister = false;
+  isVisibleLogin = true
   login = {username: '', password: '', notice: '输入用户名和密码', isError: false};
   register = {username: '', password: '', notice: '创建账号后，请记住用户名和密码', isError: false};
-
+  created(){
+    auth.getInfo().then(data => {
+      this.isVisibleLogin = data.isLogin !== true;
+    })
+  }
   showLogin() {
     this.isShowLogin = true;
     this.isShowRegister = false;
@@ -65,7 +70,7 @@ export default class Login extends Vue {
     }
     this.register.isError = false;
     this.register.notice = '';
-    console.log(`start register..., username: ${this.register.username} , password: ${this.register.password}`);
+    // auth.register({username: this.login.username,password: this.login.password})
   }
 
   onLogin() {
@@ -81,7 +86,9 @@ export default class Login extends Vue {
     }
     this.login.isError = false;
     this.login.notice = '';
-    console.log(`start login..., username: ${this.login.username} , password: ${this.login.password}`);
+    auth.login({username: this.login.username,password: this.login.password}).then(()=>{
+      this.isVisibleLogin = false
+    })
   }
 
 }
