@@ -11,7 +11,7 @@ export default function request(url: string, type = 'GET', data = {}) {
         return (status >= 200 && status < 300) || status === 400;
       }
     };
-    if (type.toLocaleLowerCase('get')) {
+    if (type.toLocaleLowerCase() === 'get') {
       config.params = data;
       config.method = 'GET';
     } else {
