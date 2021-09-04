@@ -8,7 +8,7 @@
 import Vue from 'vue';
 import {Component} from 'vue-property-decorator';
 import bus from '@/helpers/bus';
-import auth from '@/apis/auth';
+import auth from '@/apis/Auth';
 import {login} from '@/helpers/authType';
 
 @Component
