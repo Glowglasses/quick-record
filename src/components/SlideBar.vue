@@ -1,12 +1,10 @@
 <template>
   <div class="wrapper" ref="wrapper">
-    <Avatar class="avatar">
-      <div>妙</div>
-    </Avatar>
+    <Avatar class="avatar"/>
     <router-link to="/noteId" active-class="selected">笔记本详情</router-link>
     <router-link to="/notebooks" active-class="selected">新建笔记本</router-link>
     <router-link to="/trash" active-class="selected">回收站</router-link>
-    <div class="logout">
+    <div class="logout" @click="logout">
       <i>退出</i>
     </div>
   </div>
@@ -16,6 +14,7 @@
 import Vue from 'vue';
 import {Component} from 'vue-property-decorator';
 import Avatar from '@/components/Avatar.vue';
+import auth from '@/apis/auth';
 @Component({
   components: {Avatar}
 })
@@ -23,6 +22,11 @@ export default class slideBar extends Vue {
   mounted() {
     let div = this.$refs.wrapper as HTMLDivElement;
     div.style.height = document.documentElement.clientHeight + 'px';
+  }
+ logout(){
+    auth.logout().then(()=>{
+      this.$router.push('/login')
+    })
   }
 }
 </script>
@@ -40,12 +44,6 @@ export default class slideBar extends Vue {
     transform: translateX(-50%);
     padding-top: 5px;
     padding-bottom: 5px;
-    > div{
-      position: absolute;
-      left: 50%;
-      bottom: 50%;
-      transform: translate(-50%,50%);
-    }
   }
   > .logout {
     position: absolute;
@@ -54,9 +52,6 @@ export default class slideBar extends Vue {
   }
   > a{
     display: block;
-  }
-  > :nth-child(1){
-    padding: 5px 10px;
   }
   > :nth-child(2){
     padding: 5px 10px;

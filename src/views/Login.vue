@@ -7,7 +7,7 @@
           <div class="form">
             <h3 @click="showRegister">创建账户</h3>
             <transition name="slide">
-            <div  :class="{show: isShowRegister}" class="register">
+            <div  :class="{show: isShowRegister}" class="register" @keydown.enter="onRegister">
               <input type="text" placeholder="用户名" v-model="register.username">
               <input type="password" placeholder="密码" v-model="register.password">
               <p v-bind:class="{error: register.isError}"> {{register.notice}}</p>
@@ -16,7 +16,7 @@
             </transition>
             <h3 @click="showLogin">登录</h3>
             <transition name="slide">
-            <div :class="{show: isShowLogin}" class="login">
+            <div :class="{show: isShowLogin}" class="login" @keydown.enter="onLogin">
               <input type="text" placeholder="输入用户名" v-model="login.username">
               <input type="password" placeholder="密码" v-model="login.password">
               <p v-bind:class="{error: login.isError}"> {{login.notice}}</p>
@@ -35,6 +35,7 @@
 import Vue from 'vue';
 import {Component} from 'vue-property-decorator';
 import auth from '@/apis/auth';
+import bus from '@/helpers/bus';
 @Component
 export default class Login extends Vue {
   isShowLogin = true;
@@ -43,8 +44,13 @@ export default class Login extends Vue {
   login = {username: '', password: '', notice: '输入用户名和密码', isError: false};
   register = {username: '', password: '', notice: '创建账号后，请记住用户名和密码', isError: false};
   created(){
-    auth.getInfo().then(data => {
-      this.isVisibleLogin = data.isLogin !== true;
+    auth.getInfo().then((data)=>{
+      if (data.isLogin){
+        this.isVisibleLogin = false
+        this.$router.replace("/notebooks")
+      }else{
+        this.isVisibleLogin = true
+      }
     })
   }
   showLogin() {
@@ -57,7 +63,6 @@ export default class Login extends Vue {
     this.isShowRegister = true;
   }
   onRegister() {
-    console.log(this.register)
     if (!/^[\w\u4e00-\u9fa5]{3,15}$/.test(this.register.username)) {
       this.register.isError = true;
       this.register.notice = '用户名3~15个字符，仅限于字母数字下划线中文';
@@ -69,7 +74,6 @@ export default class Login extends Vue {
       return;
     }
     this.register.isError = false;
-    this.register.notice = '';
     // auth.register({username: this.login.username,password: this.login.password})
   }
 
@@ -85,12 +89,13 @@ export default class Login extends Vue {
       return;
     }
     this.login.isError = false;
-    this.login.notice = '';
-    auth.login({username: this.login.username,password: this.login.password}).then(()=>{
+    auth.login({username: this.login.username,password: this.login.password}).then((data)=>{
       this.isVisibleLogin = false
+      this.login.isError = false
+      bus.$emit('update:username',data)
+      this.$router.push('/notebooks')
     })
   }
-
 }
 </script>
 

@@ -13,12 +13,10 @@ import {login} from '@/helpers/authType';
 
 @Component
 export default class Avatar extends Vue {
-  username = '未登录';
-
+  username = "未登录"
   get slug() {
     return this.username.charAt(0);
   }
-
   created() {
     bus.$on('update:username', (user: login) => {
       if (user.data){
