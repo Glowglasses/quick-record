@@ -34,7 +34,7 @@
 <script lang="ts">
 import Vue from 'vue';
 import {Component} from 'vue-property-decorator';
-import auth from '@/apis/auth';
+import auth from '@/apis/Auth';
 import bus from '@/helpers/bus';
 @Component
 export default class Login extends Vue {
