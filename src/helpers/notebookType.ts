@@ -4,10 +4,12 @@
   userId:number
   createdAt: string
   updatedAt: string
-  noteCount: number
+  noteCounts: number
   friendlyCreatedAt?: string
 }
-export type notebooks = notebook[]
+export type notebooks = {
+  data: notebook[]
+}
 
 export type createNotebook = {
   msg: string
