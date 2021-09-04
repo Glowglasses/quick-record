@@ -5,7 +5,7 @@
 <script lang="ts">
 import Vue from 'vue';
 import {Component} from 'vue-property-decorator';
-import auth from '@/apis/auth';
+import auth from '@/apis/Auth';
 
 @Component
 export default class NoteDetail extends Vue {
