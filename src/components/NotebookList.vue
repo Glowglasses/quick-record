@@ -105,7 +105,11 @@ export default class NotebookList extends Vue {
 <style>
 @media (max-width: 500px) {
   .el-message-box.messageBox {
-    width: 70%;
+    position: absolute;
+    width: 65%;
+    top: 100px;
+    left: 50%;
+    transform: translateX(-50%);
   }
 }
 </style>
