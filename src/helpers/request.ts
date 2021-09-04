@@ -1,9 +1,10 @@
 import axios, {AxiosRequestConfig} from 'axios';
+import {Message} from 'element-ui';
 
-axios.defaults.headers.post['Content-Type'] = 'application/x-www-form-urlencoded';
+axios.defaults.headers.post['Content-Type'] = 'application/x-www-form-urlencoded;charset=utf-8';
 axios.defaults.baseURL = process.env.VUE_APP_BASE_URL;
 axios.defaults.withCredentials = true;
-export default function request<T>(url: string, type = 'GET', data = {}): Promise<T>{
+export default function request<T>(url: string, type:"GET"|"POST"|"PATCH"|"DELETE" = 'GET', data = {}): Promise<T>{
   return new Promise((resolve, reject) => {
     const config: AxiosRequestConfig = {
       url,
@@ -16,15 +17,17 @@ export default function request<T>(url: string, type = 'GET', data = {}): Promis
       config.method = 'GET';
     } else {
       config.data = data;
-      config.method = 'POST';
+      config.method = type;
     }
-    axios(config).then(data => {
-      if (data.status === 200) {
-        resolve(data.data);
+    axios(config).then(response => {
+      if (response.status === 200) {
+        resolve(response.data);
       } else {
-        reject(data.data);
+        Message.error(response.data.msg)
+        reject(response.data);
       }
-    }).catch(() => {
+    }).catch(error => {
+      Message.error(error)
       reject({msg: '网络异常'});
     });
   });
