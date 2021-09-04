@@ -34,7 +34,7 @@
 <script lang="ts">
 import Vue from 'vue';
 import {Component} from 'vue-property-decorator';
-import auth from '@/apis/Auth';
+import Auth from '@/apis/auth';
 import bus from '@/helpers/bus';
 @Component
 export default class Login extends Vue {
@@ -44,7 +44,7 @@ export default class Login extends Vue {
   login = {username: '', password: '', notice: '输入用户名和密码', isError: false};
   register = {username: '', password: '', notice: '创建账号后，请记住用户名和密码', isError: false};
   created(){
-    auth.getInfo().then((data)=>{
+    Auth.getInfo().then((data)=>{
       if (data.isLogin){
         this.isVisibleLogin = false
         this.$router.replace("/notebooks")
@@ -89,7 +89,7 @@ export default class Login extends Vue {
       return;
     }
     this.login.isError = false;
-    auth.login({username: this.login.username,password: this.login.password}).then((data)=>{
+    Auth.login({username: this.login.username,password: this.login.password}).then((data)=>{
       this.isVisibleLogin = false
       this.login.isError = false
       bus.$emit('update:username',data)
@@ -213,6 +213,7 @@ export default class Login extends Vue {
     top: 10%;
     left: 50%;
     transform: translateX(-50%);
+    width: 65%;
   }
 }
 
