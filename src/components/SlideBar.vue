@@ -1,9 +1,15 @@
 <template>
   <div class="wrapper" ref="wrapper">
     <Avatar class="avatar"/>
-    <router-link to="/noteId" active-class="selected">笔记本详情</router-link>
-    <router-link to="/notebooks" active-class="selected">新建笔记本</router-link>
-    <router-link to="/trash" active-class="selected">回收站</router-link>
+    <router-link to="/note" active-class="selected">
+      <i class="el-icon-notebook-1">笔记</i>
+    </router-link>
+    <router-link to="/notebooks" active-class="selected">
+      <i class="el-icon-notebook-2">笔记本</i>
+    </router-link>
+    <router-link to="/trash" active-class="selected">
+      <i class="el-icon-delete-solid">回收站</i>
+    </router-link>
     <div class="logout" @click="logout">
       <i>退出</i>
     </div>
@@ -15,17 +21,24 @@ import Vue from 'vue';
 import {Component} from 'vue-property-decorator';
 import Avatar from '@/components/Avatar.vue';
 import auth from '@/apis/auth';
+import {Message} from 'element-ui';
 @Component({
   components: {Avatar}
 })
 export default class slideBar extends Vue {
   mounted() {
     let div = this.$refs.wrapper as HTMLDivElement;
-    div.style.height = document.documentElement.clientHeight + 'px';
+    div.style.height = document.documentElement.clientHeight + 'px'
+    window.onresize = () => {
+      let div = this.$refs.wrapper as HTMLDivElement;
+      div.style.height = document.documentElement.clientHeight + 'px';
+      console.log(div.style.height)
+    }
   }
  logout(){
     auth.logout().then(()=>{
       this.$router.push('/login')
+      Message.success("账户已退出")
     })
   }
 }
@@ -37,6 +50,7 @@ export default class slideBar extends Vue {
   text-align: center;
   background-color: #2c333c;
   color: white;
+  font-size: 13px;
   > .avatar{
     background-color: #f2b81c;
     position: relative;
@@ -44,11 +58,14 @@ export default class slideBar extends Vue {
     transform: translateX(-50%);
     padding-top: 5px;
     padding-bottom: 5px;
+    font-size: 16px;
   }
   > .logout {
     position: absolute;
     bottom: 30px;
-    left: 30px;
+    left: 50%;
+    transform: translateX(-50%);
+    font-size: 16px;
   }
   > a{
     display: block;
