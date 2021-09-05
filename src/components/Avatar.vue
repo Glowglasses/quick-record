@@ -8,7 +8,7 @@
 import Vue from 'vue';
 import {Component} from 'vue-property-decorator';
 import bus from '@/helpers/bus';
-import auth from '@/apis/Auth';
+import Auth from '@/apis/auth';
 import {login} from '@/helpers/authType';
 
 @Component
@@ -23,7 +23,7 @@ export default class Avatar extends Vue {
         this.username = user.data.username;
       }
     });
-    auth.getInfo().then((data) => {
+    Auth.getInfo().then((data) => {
       if (data.isLogin) {
         if (data.data){
           this.username = data.data.username;
