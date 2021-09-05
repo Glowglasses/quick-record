@@ -210,7 +210,7 @@ export default class Login extends Vue {
   }
   .modal-container{
     position: absolute;
-    top: 10%;
+    top: 100px;
     left: 50%;
     transform: translateX(-50%);
     width: 65%;
