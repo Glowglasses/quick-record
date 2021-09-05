@@ -10,18 +10,15 @@ Vue.use(VueRouter);
 const routes: Array<RouteConfig> = [
   {
     path: '/',
-    component: Login
+    alias: '/notebooks',
+    component: NotebookList
   },
   {
     path: '/login',
     component: Login
   },
   {
-    path: '/notebooks',
-    component: NotebookList
-  },
-  {
-    path: '/noteId',
+    path: '/note',
     component: NoteDetail
   },
   {
