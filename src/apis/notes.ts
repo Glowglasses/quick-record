@@ -19,7 +19,7 @@ export default {
             note.updatedAtFriendly = friendlyDate(note.updatedAt);
             return note;
           }).sort((note1, note2) => {
-            return Date.parse(note2.updatedAt) - Date.parse(note2.updatedAt);
+            return Date.parse(note2.updatedAt) - Date.parse(note1.updatedAt);
           });
           resolve(response);
         }).catch(err => {
