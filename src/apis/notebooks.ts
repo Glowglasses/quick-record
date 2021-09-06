@@ -17,6 +17,7 @@ export default {
           response.data = response.data.sort((notebook1, notebook2) => Date.parse(notebook2.createdAt) - Date.parse(notebook1.createdAt));
           response.data.forEach(notebook => {
             notebook.friendlyCreatedAt = friendlyDate(notebook.createdAt);
+            notebook.friendlyUpdatedAt = friendlyDate(notebook.updatedAt)
           });
           resolve(response);
         }).catch(err => {
@@ -33,8 +34,16 @@ export default {
     return request<deleteNotebook>(URL.DELETE.replace(':id', notebookId + ''), 'DELETE');
   },
 
-  addNotebook({title = ''} = {title: ''}) {
-    return request<createNotebook>(URL.ADD, 'POST', {title});
+  addNotebook({title = ''} = {title: ''}):Promise<createNotebook> {
+    return new Promise((resolve,reject) => {
+      request<createNotebook>(URL.ADD, 'POST', {title}).then((response) => {
+        response.data.friendlyCreatedAt = friendlyDate(response.data.createdAt)
+        response.data.friendlyUpdatedAt = friendlyDate(response.data.updatedAt)
+        resolve(response)
+      }).catch((error)=>{
+        reject(error)
+      });
+    })
   }
 
 };
