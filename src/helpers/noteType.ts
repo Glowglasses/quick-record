@@ -1,4 +1,4 @@
-type note = {
+export type note = {
   isDelete: boolean
   id: number
   title: string
