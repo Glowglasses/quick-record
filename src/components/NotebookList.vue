@@ -7,7 +7,7 @@
       <div class="layout">
         <h3>笔记本列表({{ notebooks.length }})</h3>
         <div class="book-list">
-          <router-link v-for="(notebook, index) in notebooks" :to=" '/note/' + notebook.id" class="notebook" :key="index">
+          <router-link v-for="(notebook, index) in notebooks" :to=" `/note?notebookId=${notebook.id}`" class="notebook" :key="index">
             <div>
               <span class="iconfont icon-notebook"></span> {{ notebook.title }}
               <span>{{ notebook.noteCounts }}</span>
