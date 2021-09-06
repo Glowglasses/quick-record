@@ -32,7 +32,6 @@ export default class slideBar extends Vue {
     window.onresize = () => {
       let div = this.$refs.wrapper as HTMLDivElement;
       div.style.height = document.documentElement.clientHeight + 'px';
-      console.log(div.style.height)
     }
   }
  logout(){
