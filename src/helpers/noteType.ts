@@ -4,15 +4,17 @@ type note = {
   title: string
   content: string
   userId: number
-  updateAt: string
-  createAt: string
+  updatedAt: string
+  createdAt: string
+  createdAtFriendly?: string
+  updatedAtFriendly?: string
 }
 export type createNote = {
   msg: string
   data?: note
 }
 
-export type Notes = {
+export type notes = {
   data: note[]
 }
 
