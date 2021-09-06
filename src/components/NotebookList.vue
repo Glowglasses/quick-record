@@ -26,29 +26,37 @@
 
 <script lang="ts">
 import Vue from 'vue';
-import {Component} from 'vue-property-decorator';
+import Component from 'vue-class-component';
 import Auth from '@/apis/auth';
 import {notebook} from '@/helpers/notebookType';
-import {friendlyDate} from '@/helpers/util';
-import Notebooks from '@/apis/notebooks';
-import {MessageBox, Message} from 'element-ui';
+import {MessageBox} from 'element-ui';
 import {MessageBoxInputData} from 'element-ui/types/message-box';
+import { mapActions ,mapGetters} from 'vuex'
 
-@Component
+@Component({
+  computed: mapGetters([
+      'notebooks'
+  ]),
+  methods: mapActions([
+      'getNotebooks',
+      'addNotebook',
+      'updateNotebook',
+      'deleteNotebook'
+  ])
+})
 export default class NotebookList extends Vue {
-  notebooks: notebook[] = [];
-
   created() {
     Auth.getInfo().then((data) => {
       if (!data.isLogin) {
         this.$router.push('/login');
       }
     });
-    Notebooks.getAll().then(response => {
-      this.notebooks = response.data;
-    });
+    this.getNotebooks()
   }
-
+  getNotebooks!: () => Promise<void>
+  addNotebook!: ({title}:{title:string}) => Promise<void>
+  updateNotebook!: ({notebookId,title}:{notebookId:number,title:string}) => Promise<void>
+  deleteNotebook!: ({notebookId}: {notebookId:number}) => Promise<void>
   onCreate() {
     MessageBox.prompt('输入新笔记本标题', '创建笔记本', {
       confirmButtonText: '确定',
@@ -57,12 +65,9 @@ export default class NotebookList extends Vue {
       inputErrorMessage: '标题不能为空，且不超过30个字符',
       customClass: 'messageBox',
     }).then((value) => {
-      return Notebooks.addNotebook({title: (value as MessageBoxInputData).value});
-    }).then(response => {
-      response.data.friendlyCreatedAt = friendlyDate(response.data.createdAt);
-      this.notebooks.unshift(response.data);
-      Message.success(response.msg);
-    });
+      const title = (value as MessageBoxInputData).value
+      this.addNotebook({title})
+    })
   }
 
   onEdit(notebook: notebook) {
@@ -76,11 +81,8 @@ export default class NotebookList extends Vue {
       customClass: 'messageBox',
     }).then((value) => {
       title = (value as MessageBoxInputData).value;
-      return Notebooks.updateNotebook(notebook.id, {title});
-    }).then(response => {
-      notebook.title = title;
-      Message.success(response.msg);
-    });
+      this.updateNotebook({notebookId: notebook.id,title:title})
+    })
   }
 
   onDelete(notebook: notebook) {
@@ -90,13 +92,9 @@ export default class NotebookList extends Vue {
       type: 'warning',
       customClass: 'messageBox',
     }).then(() => {
-      return Notebooks.deleteNotebook(notebook.id);
-    }).then(response => {
-      this.notebooks.splice(this.notebooks.indexOf(notebook), 1);
-      Message.success(response.msg);
-    });
-  }
-
+      this.deleteNotebook({notebookId:notebook.id})
+    })
+}
 }
 </script>
 <style lang="scss" scoped>
