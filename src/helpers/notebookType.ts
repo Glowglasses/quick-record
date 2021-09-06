@@ -6,6 +6,7 @@
   updatedAt: string
   noteCounts: number
   friendlyCreatedAt?: string
+  friendlyUpdatedAt?: string
 }
 export type notebooks = {
   data: notebook[]
