@@ -1,6 +1,6 @@
 import request from '@/helpers/request';
 import {friendlyDate} from '@/helpers/util';
-import {createNote, notes, updateNote} from '@/helpers/noteType';
+import {createNote, deleteNote, notes, updateNote} from '@/helpers/noteType';
 
 const URL = {
   GET: '/notes/from/:notebookId',
@@ -33,12 +33,15 @@ export default {
   },
 
   deleteNote({noteId}: { noteId: number }) {
-    return request(URL.DELETE.replace(':noteId', noteId + ''), 'DELETE');
+    return request<deleteNote>(URL.DELETE.replace(':noteId', noteId + ''), 'DELETE');
   },
 
-  addNote({notebookId}: { notebookId: string }, {title = '', content = ''} = {title: '', content: ''}) {
+  addNote({notebookId}: { notebookId: number }, {title = '', content = ''} = {
+    title: '',
+    content: ''
+  }): Promise<createNote> {
     return new Promise((resolve, reject) => {
-      request<createNote>(URL.ADD.replace(':notebookId', notebookId), 'POST', {title, content})
+      request<createNote>(URL.ADD.replace(':notebookId', notebookId + ''), 'POST', {title, content})
         .then(response => {
           if (!response.data) return;
           response.data.createdAtFriendly = friendlyDate(response.data.createdAt);
