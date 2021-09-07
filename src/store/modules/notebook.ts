@@ -4,13 +4,22 @@ import {Message} from 'element-ui';
 
 type state = {
   notebooks: notebook[]
+  currentBook: any
+  currentBookId: any
 }
 const state: state = {
-  notebooks: []
+  notebooks: [],
+  currentBook: undefined,
+  currentBookId: undefined
 };
 
 const getters = {
-  notebooks: (state: state) => state.notebooks
+  notebooks: (state: state) => state.notebooks,
+  currentBook: (state: state) => {
+    if (!Array.isArray(state.notebooks)) return {};
+    if (!state.currentBookId) return state.notebooks[0] || {};
+    return state.notebooks.find(notebook => notebook.id == state.currentBookId) || {};
+  }
 };
 
 const mutations = {
@@ -18,14 +27,18 @@ const mutations = {
     state.notebooks = payload.notebooks.data;
   },
   addNotebook(state: state, payload: { notebook: notebook }) {
-    state.notebooks.unshift(payload.notebook);
+    if (state && state.notebooks) state.notebooks.unshift(payload.notebook);
   },
   updateNotebook(state: state, payload: { notebookId: number, title: string }) {
+    if (!state || !state.notebooks) return;
     const notebook = state.notebooks.find(notebook => notebook.id === payload.notebookId);
     if (notebook) notebook.title = payload.title;
   },
   deleteNotebook(state: state, payload: { notebookId: number }) {
-    state.notebooks = state.notebooks.filter(notebook => notebook.id != payload.notebookId);
+    if (state && state.notebooks) state.notebooks = state.notebooks.filter(notebook => notebook.id != payload.notebookId);
+  },
+  setCurrentBook(state:state,payload:{currentBookId: number}){
+    state.currentBookId = payload.currentBookId
   }
 };
 
@@ -33,7 +46,6 @@ const actions = {
   getNotebooks({commit, state}: { commit: any, state: state }) {
     if (!state.notebooks) return Promise.resolve();
     return Notebooks.getAll().then((response) => {
-      console.log(response);
       commit('setNotebooks', {notebooks: response});
     });
   },
