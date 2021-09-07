@@ -9,19 +9,19 @@
           <span> 更新日期: {{ currentNote.updatedAtFriendly }}</span>
           <span> {{ statusText }}</span>
           <span class="iconfont el-icon-magic-stick" @click="previewVisible = !previewVisible"></span>
-          <span class="iconfont el-icon-delete" @click="deleteNote"></span>
+          <span class="iconfont el-icon-delete" @click="onDeleteNote"></span>
         </div>
         <div class="note-title">
-          <input type="text" v-model="currentNote.title" @input="updateNote" @keydown="statusText='正在输入...'"
+          <input type="text" v-model="currentNote.title" @input="onUpdateNote" @keydown="statusText='正在输入...'"
                  placeholder="输入标题">
         </div>
         <div class="editor">
-          <textarea v-show="!previewVisible" v-model="currentNote.content" @input="updateNote"
+          <textarea v-show="!previewVisible" @input="onUpdateNote" v-model="currentNote.content"
                     @keydown="statusText='正在输入...'" placeholder="输入内容, 支持 markdown 语法"></textarea>
           <div class="preview markdown-body" v-html="previewContent" v-show="previewVisible">
           </div>
         </div>
-      </div>
+        </div>
 
     </div>
   </div>
@@ -33,56 +33,62 @@ import Auth from '@/apis/auth';
 import Component from 'vue-class-component'
 import NoteSidebar from '@/components/NoteSidebar.vue';
 import {note} from '@/helpers/noteType';
-import Bus from '@/helpers/bus';
-import Notes from '@/apis/notes';
-const MarkdownIt = require('markdown-it')
-const lodash = require('lodash')
-const md = new MarkdownIt();
-import {Message} from 'element-ui';
+import {mapActions, mapGetters} from 'vuex';
+const md = require('markdown-it')({
+  html: true,
+  linkify: true,
+  typographer: true,
+})
+Component.registerHooks([
+  'beforeRouteUpdate',
+]);
 @Component({
-  components: {NoteSidebar}
+  computed:mapGetters(['notes','currentNote','currentBook']),
+  methods: mapActions(['updateNote','deleteNote','checkLogin']),
+  components: {NoteSidebar},
 })
 export default class NoteDetail extends Vue {
-  notes: note[] = [];
-  currentNote = {};
   statusText = '笔记未改动';
   previewVisible = false;
-  /* eslint-disable */
+  updateNote!: ({noteId,title,content}: {noteId: number,title: string,content: string})=> Promise<void>
+  deleteNote!: ({noteId}:{noteId: number}) => Promise<void>
+  checkLogin!: () => Promise<void>
+  notes!: note[]
+  currentNote!: note
+  timer: any = null
+
   beforeRouteUpdate(to: any, from: any, next: any) {
-    this.currentNote = this.notes.find(note => note.id == to.query.noteId) || {}
+    this.$store.commit("setCurrentNote",{currentNoteId: to.query.noteId})
+    if (this.previewVisible) this.previewVisible = false
     next()
   }
+  debounce(fn: any,delay: number){
+    if(this.timer){
+      clearTimeout(this.timer)
+    }
+    this.timer = setTimeout(fn,delay)
+  }
   created() {
-    Auth.getInfo()
-        .then(res => {
-          if (!res.isLogin) {
-            this.$router.push({path: '/login'});
-          }
-        });
-    Bus.$once('update:notes', (val: note[]) => {
-      this.currentNote = val.find(note => note.id + '' == this.$route.query.noteId) || {};
-    });
+    this.checkLogin()
   }
   get previewContent() {
-    return md.render((this.currentNote as note).content || '');
+    return md.render(this.currentNote.content || "")
   }
-  updateNote(){
-    lodash.debounce(() => {
-      Notes.updateNote({ noteId: (this.currentNote as note).id },
-          { title: (this.currentNote as note).title, content: (this.currentNote as note).content }).then(() => {
-            this.statusText = '已保存'
-          }).catch(() => {
+  onUpdateNote(){
+    if (!this.currentNote.id) return
+    this.debounce(() => {
+      return this.updateNote({noteId:this.currentNote.id,title: this.currentNote.title,content: this.currentNote.content}).then(() => {
+        this.statusText = '已保存'
+      }).catch(() => {
         this.statusText = '保存出错'
       })
-    }, 700)()
+    },1500)
   }
-  deleteNote() {
-    Notes.deleteNote({ noteId: (this.currentNote as note).id })
-        .then(data => {
-          Message.success(data.msg)
-          this.notes.splice(this.notes.indexOf(this.currentNote as note), 1)
-          this.$router.replace({ path: '/note' })
-        })
+  onDeleteNote() {
+    this.deleteNote({noteId:this.currentNote.id}).then(() => {
+      this.notes.splice(this.notes.indexOf(this.currentNote as note), 1)
+      this.$router.replace({ path: '/note' })
+    })
   }
 }
 

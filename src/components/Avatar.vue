@@ -6,30 +6,26 @@
 
 <script lang="ts">
 import Vue from 'vue';
-import {Component} from 'vue-property-decorator';
+import Component from 'vue-class-component';
 import bus from '@/helpers/bus';
-import Auth from '@/apis/auth';
 import {login} from '@/helpers/authType';
+import {mapActions,mapGetters} from 'vuex';
 
-@Component
+@Component({
+  computed:mapGetters(['slug','username']),
+  methods:mapActions(['checkLogin'])
+})
 export default class Avatar extends Vue {
-  username = "未登录"
-  get slug() {
-    return this.username.charAt(0);
-  }
+  slug!: string
+  username!: string
+  checkLogin!: () => Promise<void>
   created() {
     bus.$on('update:username', (user: login) => {
       if (user.data){
         this.username = user.data.username;
       }
     });
-    Auth.getInfo().then((data) => {
-      if (data.isLogin) {
-        if (data.data){
-          this.username = data.data.username;
-        }
-      }
-    });
+    this.checkLogin()
   }
 }
 </script>

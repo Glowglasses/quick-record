@@ -33,13 +33,10 @@ import Component from 'vue-class-component';
 import {DropdownItem, DropdownMenu, Dropdown} from 'element-ui';
 import {mapActions, mapGetters, mapMutations} from 'vuex';
 import {notebook} from '@/helpers/notebookType';
+import {note} from '@/helpers/noteType';
 
 @Component({
-  computed: mapGetters([
-    'currentBook',
-    'notes',
-    'notebooks',
-  ]),
+  computed: mapGetters(['currentBook', 'notes', 'notebooks', 'currentNote']),
   methods: {...mapActions(['getNotebooks', 'addNote', 'getNotes']), ...mapMutations(['setCurrentBook'])},
   components: {[Dropdown.name]: Dropdown, [DropdownItem.name]: DropdownItem, [DropdownMenu.name]: DropdownMenu},
 })
@@ -48,6 +45,7 @@ export default class NoteSidebar extends Vue {
   setCurrentBook!: ({currentBookId}: { currentBookId: any }) => void;
   addNote!: ({notebookId}: { notebookId: number }) => Promise<void>;
   getNotes!: ({notebookId}: { notebookId: number }) => Promise<void>;
+  notes!: note[]
   currentBook!: notebook;
 
   created() {
@@ -55,7 +53,7 @@ export default class NoteSidebar extends Vue {
       this.setCurrentBook({currentBookId: this.$route.query.notebookId});
       return this.getNotes({notebookId: this.currentBook.id});
     }).then(() => {
-      this.$store.commit('setCurrentNote',this.$route.query.noteId)
+      this.$store.commit('setCurrentNote', this.$route.query.noteId);
     });
   }
 
@@ -64,7 +62,8 @@ export default class NoteSidebar extends Vue {
       return this.$router.push({path: '/trash'});
     }
     this.setCurrentBook({currentBookId: notebookId});
-    this.getNotes({notebookId: parseInt(notebookId)});
+    // this.getNotes({notebookId: parseInt(notebookId)});
+    this.$router.replace({path: '/note', query: {'noteId': this.notes[0].id + '','notebookId': this.currentBook.id + ''}});
   }
 
   onAddNote() {

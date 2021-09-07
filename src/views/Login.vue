@@ -7,21 +7,21 @@
           <div class="form">
             <h3 @click="showRegister">创建账户</h3>
             <transition name="slide">
-            <div  :class="{show: isShowRegister}" class="register" @keydown.enter="onRegister">
-              <input type="text" placeholder="用户名" v-model="register.username">
-              <input type="password" placeholder="密码" v-model="register.password">
-              <p v-bind:class="{error: register.isError}"> {{register.notice}}</p>
-              <div class="button" @click="onRegister">创建账号</div>
-            </div>
+              <div :class="{show: isShowRegister}" class="register" @keydown.enter="onRegister">
+                <input type="text" placeholder="用户名" v-model="register.username">
+                <input type="password" placeholder="密码" v-model="register.password">
+                <p v-bind:class="{error: register.isError}"> {{ register.notice }}</p>
+                <div class="button" @click="onRegister">创建账号</div>
+              </div>
             </transition>
             <h3 @click="showLogin">登录</h3>
             <transition name="slide">
-            <div :class="{show: isShowLogin}" class="login" @keydown.enter="onLogin">
-              <input type="text" placeholder="输入用户名" v-model="login.username">
-              <input type="password" placeholder="密码" v-model="login.password">
-              <p v-bind:class="{error: login.isError}"> {{login.notice}}</p>
-              <div class="button" @click="onLogin"> 登录</div>
-            </div>
+              <div :class="{show: isShowLogin}" class="login" @keydown.enter="onLogin">
+                <input type="text" placeholder="输入用户名" v-model="login.username">
+                <input type="password" placeholder="密码" v-model="login.password">
+                <p v-bind:class="{error: login.isError}"> {{ login.notice }}</p>
+                <div class="button" @click="onLogin"> 登录</div>
+              </div>
             </transition>
           </div>
         </div>
@@ -33,26 +33,27 @@
 
 <script lang="ts">
 import Vue from 'vue';
-import {Component} from 'vue-property-decorator';
+import Component from 'vue-class-component';
 import Auth from '@/apis/auth';
-import bus from '@/helpers/bus';
-@Component
+import {mapActions} from 'vuex';
+
+@Component({
+  methods: mapActions({userRegister: 'register', userLogin: 'login', checkLogin: 'checkLogin'})
+})
 export default class Login extends Vue {
   isShowLogin = true;
   isShowRegister = false;
-  isVisibleLogin = true
+  isVisibleLogin = true;
   login = {username: '', password: '', notice: '输入用户名和密码', isError: false};
   register = {username: '', password: '', notice: '创建账号后，请记住用户名和密码', isError: false};
-  created(){
-    Auth.getInfo().then((data)=>{
-      if (data.isLogin){
-        this.isVisibleLogin = false
-        this.$router.replace("/notebooks")
-      }else{
-        this.isVisibleLogin = true
-      }
-    })
+  userRegister!: ({username, password}: { username: string, password: string }) => Promise<void>;
+  userLogin!: ({username, password}: { username: string, password: string }) => Promise<void>;
+  checkLogin!: () => Promise<void>;
+
+  created() {
+    this.checkLogin();
   }
+
   showLogin() {
     this.isShowLogin = true;
     this.isShowRegister = false;
@@ -62,6 +63,7 @@ export default class Login extends Vue {
     this.isShowLogin = false;
     this.isShowRegister = true;
   }
+
   onRegister() {
     if (!/^[\w\u4e00-\u9fa5]{3,15}$/.test(this.register.username)) {
       this.register.isError = true;
@@ -74,7 +76,10 @@ export default class Login extends Vue {
       return;
     }
     this.register.isError = false;
-    // auth.register({username: this.login.username,password: this.login.password})
+    this.userRegister({username: this.register.username, password: this.register.password}).then(() => {
+      this.isVisibleLogin = false;
+      this.$router.push('/notebooks');
+    });
   }
 
   onLogin() {
@@ -89,12 +94,10 @@ export default class Login extends Vue {
       return;
     }
     this.login.isError = false;
-    Auth.login({username: this.login.username,password: this.login.password}).then((data)=>{
-      this.isVisibleLogin = false
-      this.login.isError = false
-      bus.$emit('update:username',data)
-      this.$router.push('/notebooks')
-    })
+    this.userLogin({username: this.login.username, password: this.login.password}).then(() => {
+      this.isVisibleLogin = false;
+      this.$router.push('/notebooks');
+    });
   }
 }
 </script>
@@ -136,6 +139,7 @@ export default class Login extends Vue {
     width: 270px;
     border-left: 1px solid #ccc;
     overflow: hidden;
+
     h3 {
       padding: 10px 20px;
       margin-top: -1px;
@@ -167,9 +171,11 @@ export default class Login extends Vue {
       height: 0;
       overflow: hidden;
       transition: height .4s;
-      &.show{
+
+      &.show {
         height: 193px;
       }
+
       input {
         display: block;
         width: 100%;
@@ -208,7 +214,7 @@ export default class Login extends Vue {
   .main {
     display: none;
   }
-  .modal-container{
+  .modal-container {
     position: absolute;
     top: 100px;
     left: 50%;

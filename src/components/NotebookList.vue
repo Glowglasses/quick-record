@@ -7,7 +7,8 @@
       <div class="layout">
         <h3>笔记本列表({{ notebooks.length }})</h3>
         <div class="book-list">
-          <router-link v-for="(notebook, index) in notebooks" :to=" `/note?notebookId=${notebook.id}`" class="notebook" :key="index">
+          <router-link v-for="(notebook, index) in notebooks" :to=" `/note?notebookId=${notebook.id}`" class="notebook"
+                       :key="index">
             <div>
               <span class="iconfont icon-notebook"></span> {{ notebook.title }}
               <span>{{ notebook.noteCounts }}</span>
@@ -31,32 +32,35 @@ import Auth from '@/apis/auth';
 import {notebook} from '@/helpers/notebookType';
 import {MessageBox} from 'element-ui';
 import {MessageBoxInputData} from 'element-ui/types/message-box';
-import { mapActions ,mapGetters} from 'vuex'
+import {mapActions, mapGetters} from 'vuex';
+import {getInfo} from '@/helpers/authType';
 
 @Component({
   computed: mapGetters([
-      'notebooks'
+    'notebooks'
   ]),
   methods: mapActions([
-      'getNotebooks',
-      'addNotebook',
-      'updateNotebook',
-      'deleteNotebook'
+    'getNotebooks',
+    'addNotebook',
+    'updateNotebook',
+    'deleteNotebook',
+    'checkLogin'
   ])
 })
 export default class NotebookList extends Vue {
+  checkLogin!: () => Promise<getInfo>;
+
   created() {
-    Auth.getInfo().then((data) => {
-      if (!data.isLogin) {
-        this.$router.push('/login');
-      }
+    this.checkLogin().then(() => {
+      this.getNotebooks();
     });
-    this.getNotebooks()
   }
-  getNotebooks!: () => Promise<void>
-  addNotebook!: ({title}:{title:string}) => Promise<void>
-  updateNotebook!: ({notebookId,title}:{notebookId:number,title:string}) => Promise<void>
-  deleteNotebook!: ({notebookId}: {notebookId:number}) => Promise<void>
+
+  getNotebooks!: () => Promise<void>;
+  addNotebook!: ({title}: { title: string }) => Promise<void>;
+  updateNotebook!: ({notebookId, title}: { notebookId: number, title: string }) => Promise<void>;
+  deleteNotebook!: ({notebookId}: { notebookId: number }) => Promise<void>;
+
   onCreate() {
     MessageBox.prompt('输入新笔记本标题', '创建笔记本', {
       confirmButtonText: '确定',
@@ -65,9 +69,9 @@ export default class NotebookList extends Vue {
       inputErrorMessage: '标题不能为空，且不超过30个字符',
       customClass: 'messageBox',
     }).then((value) => {
-      const title = (value as MessageBoxInputData).value
-      this.addNotebook({title})
-    })
+      const title = (value as MessageBoxInputData).value;
+      this.addNotebook({title});
+    });
   }
 
   onEdit(notebook: notebook) {
@@ -81,8 +85,8 @@ export default class NotebookList extends Vue {
       customClass: 'messageBox',
     }).then((value) => {
       title = (value as MessageBoxInputData).value;
-      this.updateNotebook({notebookId: notebook.id,title:title})
-    })
+      this.updateNotebook({notebookId: notebook.id, title: title});
+    });
   }
 
   onDelete(notebook: notebook) {
@@ -92,9 +96,9 @@ export default class NotebookList extends Vue {
       type: 'warning',
       customClass: 'messageBox',
     }).then(() => {
-      this.deleteNotebook({notebookId:notebook.id})
-    })
-}
+      this.deleteNotebook({notebookId: notebook.id});
+    });
+  }
 }
 </script>
 <style lang="scss" scoped>

@@ -10,7 +10,7 @@
     <router-link to="/trash" active-class="selected">
       <i class="el-icon-delete-solid">回收站</i>
     </router-link>
-    <div class="logout" @click="logout">
+    <div class="logout" @click="onLogout">
       <i>退出</i>
     </div>
   </div>
@@ -22,22 +22,27 @@ import {Component} from 'vue-property-decorator';
 import Avatar from '@/components/Avatar.vue';
 import auth from '@/apis/auth';
 import {Message} from 'element-ui';
+import {mapActions} from 'vuex';
+
 @Component({
-  components: {Avatar}
+  components: {Avatar},
+  methods: mapActions(['logout'])
 })
 export default class slideBar extends Vue {
   mounted() {
     let div = this.$refs.wrapper as HTMLDivElement;
-    div.style.height = document.documentElement.clientHeight + 'px'
+    div.style.height = document.documentElement.clientHeight + 'px';
     window.onresize = () => {
       let div = this.$refs.wrapper as HTMLDivElement;
       div.style.height = document.documentElement.clientHeight + 'px';
-    }
+    };
   }
- logout(){
-    auth.logout().then(()=>{
-      this.$router.push('/login')
-      Message.success("账户已退出")
+
+  logout!: () => Promise<void>
+
+  onLogout() {
+    this.logout().then(() => {
+      Message.success('账户已退出');
     })
   }
 }
@@ -50,7 +55,8 @@ export default class slideBar extends Vue {
   background-color: #2c333c;
   color: white;
   font-size: 13px;
-  > .avatar{
+
+  > .avatar {
     background-color: #f2b81c;
     position: relative;
     left: 50%;
@@ -59,6 +65,7 @@ export default class slideBar extends Vue {
     padding-bottom: 5px;
     font-size: 16px;
   }
+
   > .logout {
     position: absolute;
     bottom: 30px;
@@ -66,16 +73,20 @@ export default class slideBar extends Vue {
     transform: translateX(-50%);
     font-size: 16px;
   }
-  > a{
+
+  > a {
     display: block;
   }
-  > :nth-child(2){
+
+  > :nth-child(2) {
     padding: 5px 10px;
   }
-  > :nth-child(3){
+
+  > :nth-child(3) {
     padding: 5px 10px;
   }
-  > :nth-child(4){
+
+  > :nth-child(4) {
     padding: 5px 10px;
   }
 }
