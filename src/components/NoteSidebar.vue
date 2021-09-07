@@ -1,6 +1,6 @@
 <template>
   <div class="note-sidebar">
-    <span class="btn add-note" @click="addNote">添加笔记</span>
+    <span class="btn add-note" @click="onAddNote">添加笔记</span>
     <el-dropdown class="notebook-title" @command="handleCommand" placement="bottom">
       <span class="el-dropdown-link">
         {{ currentBook.title }} <i class="iconfont el-icon-arrow-down"></i>
@@ -29,50 +29,46 @@
 
 <script lang="ts">
 import Vue from 'vue';
-import {Component} from 'vue-property-decorator';
+import Component from 'vue-class-component';
 import {DropdownItem, DropdownMenu, Dropdown} from 'element-ui';
-import Notes from '@/apis/notes';
-import Notebooks from '@/apis/notebooks';
+import {mapActions, mapGetters, mapMutations} from 'vuex';
 import {notebook} from '@/helpers/notebookType';
-import {note} from '@/helpers/noteType';
-import Bus from '@/helpers/bus'
+
 @Component({
-  components: {[Dropdown.name]: Dropdown, [DropdownItem.name]: DropdownItem, [DropdownMenu.name]: DropdownMenu}
+  computed: mapGetters([
+    'currentBook',
+    'notes',
+    'notebooks',
+  ]),
+  methods: {...mapActions(['getNotebooks', 'addNote', 'getNotes']), ...mapMutations(['setCurrentBook'])},
+  components: {[Dropdown.name]: Dropdown, [DropdownItem.name]: DropdownItem, [DropdownMenu.name]: DropdownMenu},
 })
 export default class NoteSidebar extends Vue {
-  notebooks: notebook[] = [];
-  notes: note[] = [];
-  currentBook = {};
+  getNotebooks!: () => Promise<void>;
+  setCurrentBook!: ({currentBookId}: { currentBookId: any }) => void;
+  addNote!: ({notebookId}: { notebookId: number }) => Promise<void>;
+  getNotes!: ({notebookId}: { notebookId: number }) => Promise<void>;
+  currentBook!: notebook;
 
   created() {
-    Notebooks.getAll().then(response => {
-      this.notebooks = response.data;
-      this.currentBook = this.notebooks.find(notebook => notebook.id+"" === this.$route.query.notebookId) || this.notebooks[0] || {};
-      return Notes.getAll({notebookId: (this.currentBook as note).id});
-    }).then(response => {
-      this.notes = response.data;
-      this.$emit('update:notes', this.notes);
-      Bus.$emit('update:notes', this.notes)
+    this.getNotebooks().then(() => {
+      this.setCurrentBook({currentBookId: this.$route.query.notebookId});
+      return this.getNotes({notebookId: this.currentBook.id});
+    }).then(() => {
+      this.$store.commit('setCurrentNote',this.$route.query.noteId)
     });
   }
 
   handleCommand(notebookId: string) {
-    if (notebookId == 'trash') {
+    if (notebookId === 'trash') {
       return this.$router.push({path: '/trash'});
     }
-    this.currentBook = {...this.notebooks.find((notebook: notebook) => notebook.id + '' == notebookId)};
-    Notes.getAll({notebookId: parseInt(notebookId)})
-        .then(response => {
-          this.notes = response.data;
-          this.$emit('update:notes', this.notes);
-        });
+    this.setCurrentBook({currentBookId: notebookId});
+    this.getNotes({notebookId: parseInt(notebookId)});
   }
 
-  addNote() {
-    Notes.addNote({notebookId: (this.currentBook as note).id})
-        .then(response => {
-          if (response.data) this.notes.unshift(response.data);
-        });
+  onAddNote() {
+    this.addNote({notebookId: this.currentBook.id});
   }
 }
 </script>
