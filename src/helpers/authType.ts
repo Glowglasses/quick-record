@@ -1,4 +1,4 @@
-type data = {
+export type user = {
   id: number
   username: string
   updatedAt: string
@@ -6,12 +6,12 @@ type data = {
 }
 export type register = {
   msg: string
-  data: data
+  data: user
 }
 
 export type getInfo = {
   isLogin: boolean
-  data?: data
+  data?: user
 }
 
 export type logout = {
@@ -20,5 +20,5 @@ export type logout = {
 
 export type login = {
   msg: string
-  data?: data
+  data?: user
 }
