@@ -40,21 +40,25 @@ const mutations = {
     state.notes = state.notes.filter((note: note) => note.id !== payload.noteId);
   },
 
-  setCurrentNote(state: state, payload: { currentNoteId: number }) {
-    if (payload) state.currentNoteId = payload.currentNoteId;
+  setCurrentNote(state: state, payload: { [props: string]: number } = {}) {
+    state.currentNoteId = payload.currentNoteId;
   }
 };
 
 const actions = {
-  getNotes({commit, state}: { commit: any,state: any }, {notebookId}: { notebookId: number }) {
-    if (state.currentBookId === notebookId ) return Promise.resolve()
+  getNotes({commit, state}: { commit: any, state: any }, {notebookId}: { notebookId: number }) {
+    if (state.currentBookId === notebookId) return Promise.resolve();
     return Note.getAll({notebookId})
       .then(response => {
         commit('setNote', {notes: response});
       });
   },
 
-  addNote({commit}: { commit: any }, { notebookId, title, content }:{ notebookId: number, title: string, content: string }) {
+  addNote({commit}: { commit: any }, {
+    notebookId,
+    title,
+    content
+  }: { notebookId: number, title: string, content: string }) {
     return Note.addNote({notebookId}, {title, content})
       .then(response => {
         commit('addNote', {note: response.data});
