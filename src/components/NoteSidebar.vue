@@ -47,6 +47,7 @@ export default class NoteSidebar extends Vue {
   getNotes!: ({notebookId}: { notebookId: number }) => Promise<void>;
   notes!: note[];
   currentBook!: notebook;
+  currentNote!: note;
 
   created() {
     this.getNotebooks().then(() => {
@@ -56,8 +57,8 @@ export default class NoteSidebar extends Vue {
       this.$store.commit('setCurrentNote', this.$route.query.noteId);
       this.$router.replace({
         path: '/note',
-        query: {'noteId': this.notes[0].id + '', 'notebookId': this.currentBook.id + ''}
-      });
+        query: {'noteId': this.currentNote.id + '', 'notebookId': this.currentBook.id + ''}
+      }).catch(() => {return});
     });
   }
 

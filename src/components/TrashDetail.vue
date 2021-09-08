@@ -41,50 +41,49 @@ import Vue from 'vue';
 import {Component} from 'vue-property-decorator';
 import {mapActions, mapGetters, mapMutations} from 'vuex';
 import {note} from '@/helpers/noteType';
-import {MessageBox} from 'element-ui';
+import {Message, MessageBox} from 'element-ui';
 
 const MarkdownIt = require('markdown-it');
 const md = new MarkdownIt();
 
 @Component({
-  methods: {...mapActions(['checkLogin', 'getTrashNotes', 'revertTrashNote', 'deleteTrashNote', 'getNotebooks']),...mapMutations(['setCurrentTrashNote'])},
+  methods: {...mapActions(['checkLogin', 'getTrashNotes', 'revertTrashNote', 'deleteTrashNote', 'getNotebooks']), ...mapMutations(['setCurrentTrashNote'])},
   computed: mapGetters(['trashNotes', 'currentTrashNote', 'belongTo'])
 })
 export default class TrashDetail extends Vue {
   checkLogin!: ({path}: { path: string }) => Promise<void>;
   getTrashNotes!: () => Promise<void>;
   getNotebooks!: () => Promise<void>;
-  deleteTrashNote!: ({noteId}: {noteId: number}) => Promise<void>;
+  deleteTrashNote!: ({noteId}: { noteId: number }) => Promise<void>;
   trashNotes!: note[];
   currentTrashNote!: note;
-  revertTrashNote!: ({noteId}: {noteId: number}) => Promise<void>
-  setCurrentTrashNote!: ({currentTrashNoteId}: {currentTrashNoteId: number}) => void
+  revertTrashNote!: ({noteId}: { noteId: number }) => Promise<void>;
+  setCurrentTrashNote!: ({currentTrashNoteId}?: { currentTrashNoteId: string }) => void;
 
   created() {
     this.checkLogin({path: 'login'});
     this.getTrashNotes().then(() => {
-      this.getNotebooks()
-      this.$store.commit('setCurrentTrashNote', this.$route.query.noteId);
+      this.getNotebooks();
+      this.setCurrentTrashNote({currentTrashNoteId: this.$route.query.noteId + ''});
+      this.$router.replace({query: {noteId: this.currentTrashNote.id + ''}}).catch(() => {return});
     });
   }
 
-  get compiledMarkdown(){
-    return md.render(this.currentTrashNote.content || "")
+  get compiledMarkdown() {
+    return md.render(this.currentTrashNote.content || '');
   }
+
   onDelete() {
     MessageBox.confirm('此操作将永久删除该文件, 是否继续?', '提示', {
       confirmButtonText: '确定',
       cancelButtonText: '取消',
       type: 'warning'
     }).then(() => {
-      return this.deleteTrashNote({noteId: this.currentTrashNote.id});
-    }).then(() => {
-      this.$message({
-        type: 'success',
-        message: '删除成功!'
-      });
+      this.deleteTrashNote({noteId: this.currentTrashNote.id});
+      this.setCurrentTrashNote();
+      this.$router.replace({path: '/trash', query: {noteId: this.currentTrashNote.id + ''}});
     }).catch(() => {
-      this.$message({
+      Message({
         type: 'info',
         message: '已取消删除'
       });
@@ -93,9 +92,12 @@ export default class TrashDetail extends Vue {
 
   onRevert() {
     this.revertTrashNote({noteId: this.currentTrashNote.id});
+    this.setCurrentTrashNote();
+    this.$router.replace({path: 'trash', query: {noteId: this.currentTrashNote.id + ''}});
   }
 
   beforeRouteUpdate(to: any, from: any, next: any) {
+    if (to.query.noteId === from.query.noteId) return;
     this.setCurrentTrashNote({currentTrashNoteId: to.query.noteId});
     next();
   }
