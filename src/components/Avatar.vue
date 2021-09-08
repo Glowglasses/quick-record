@@ -1,6 +1,6 @@
 <template>
-  <div class="wrapper">
-    <span :title="username">{{ slug }}</span>
+  <div class="wrapper" :title="username">
+    <span>{{ slug }}</span>
   </div>
 </template>
 
