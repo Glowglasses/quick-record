@@ -33,8 +33,8 @@ import Vue from 'vue';
 import Component from 'vue-class-component';
 import NoteSidebar from '@/components/NoteSidebar.vue';
 import {note} from '@/helpers/noteType';
-import {mapActions, mapGetters} from 'vuex';
-import {Message} from 'element-ui';
+import {mapActions, mapGetters, mapMutations} from 'vuex';
+import {notebook} from '@/helpers/notebookType';
 
 const md = require('markdown-it')({
   html: true,
@@ -46,7 +46,7 @@ Component.registerHooks([
 ]);
 @Component({
   computed: mapGetters(['notes', 'currentNote', 'currentBook']),
-  methods: mapActions(['updateNote', 'deleteNote', 'checkLogin']),
+  methods: {...mapActions(['updateNote', 'deleteNote', 'checkLogin']),...mapMutations(['setCurrentNote'])},
   components: {NoteSidebar},
 })
 export default class NoteDetail extends Vue {
@@ -55,9 +55,11 @@ export default class NoteDetail extends Vue {
   updateNote!: ({noteId, title, content}: { noteId: number, title: string, content: string }) => Promise<void>;
   deleteNote!: ({noteId}: { noteId: number }) => Promise<void>;
   checkLogin!: ({path}: { path: string }) => Promise<void>;
+  setCurrentNote!: () => void
   notes!: note[];
   currentNote!: note;
   timer: any = null;
+  currentBook!: notebook;
   isEdit = true;
 
   beforeRouteUpdate(to: any, from: any, next: any) {
@@ -98,7 +100,8 @@ export default class NoteDetail extends Vue {
 
   onDeleteNote() {
     this.deleteNote({noteId: this.currentNote.id}).then(() => {
-      this.$router.replace({path: '/note'});
+      this.setCurrentNote()
+      this.$router.replace({path: '/note',query:{noteId:this.currentNote.id+ '',notebookId: this.currentBook.id + ''}});
     });
   }
 
