@@ -13,7 +13,7 @@ export default {
     return new Promise((resolve, reject) => {
       request<trash>(URL.GET)
         .then(response => {
-          response.data = response.data.sort((note1, note2) => Date.parse(note2.createdAt) - Date.parse(note2.createdAt));
+          response.data = response.data.sort((note1, note2) => Date.parse(note2.updatedAt) - Date.parse(note1.updatedAt));
           response.data.forEach(note => {
             note.createdAtFriendly = friendlyDate(note.createdAt);
             note.updatedAtFriendly = friendlyDate(note.updatedAt);
