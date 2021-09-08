@@ -40,8 +40,8 @@ const mutations = {
     state.trashNotes = state.trashNotes.filter((note: note) => note.id != payload.noteId);
   },
 
-  setCurrentTrashNote(state: any, payload: { currentTrashNoteId: string }) {
-    if (payload.currentTrashNoteId) state.currentTrashNoteId = parseInt(payload.currentTrashNoteId);
+  setCurrentTrashNote(state: any, payload: { [props: string]: string } = {}) {
+    state.currentTrashNoteId = parseInt(payload.currentTrashNoteId);
   }
 
 };
