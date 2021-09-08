@@ -3,12 +3,12 @@ import Notebooks from '@/apis/notebooks';
 import {Message} from 'element-ui';
 
 type state = {
-  notebooks: notebook[]
+  notebooks: any
   currentBook: any
   currentBookId: any
 }
 const state: state = {
-  notebooks: [],
+  notebooks: null,
   currentBook: undefined,
   currentBookId: undefined
 };
@@ -31,20 +31,20 @@ const mutations = {
   },
   updateNotebook(state: state, payload: { notebookId: number, title: string }) {
     if (!state || !state.notebooks) return;
-    const notebook = state.notebooks.find(notebook => notebook.id === payload.notebookId);
+    const notebook = state.notebooks.find((notebook: notebook) => notebook.id === payload.notebookId);
     if (notebook) notebook.title = payload.title;
   },
   deleteNotebook(state: state, payload: { notebookId: number }) {
-    if (state && state.notebooks) state.notebooks = state.notebooks.filter(notebook => notebook.id != payload.notebookId);
+    if (state && state.notebooks) state.notebooks = state.notebooks.filter((notebook: notebook) => notebook.id != payload.notebookId);
   },
-  setCurrentBook(state:state,payload:{currentBookId: number}){
-    state.currentBookId = payload.currentBookId
+  setCurrentBook(state: state, payload: { currentBookId: number }) {
+    state.currentBookId = payload.currentBookId;
   }
 };
 
 const actions = {
   getNotebooks({commit, state}: { commit: any, state: state }) {
-    if (!state.notebooks) return Promise.resolve();
+    if (state.notebooks !== null) return Promise.resolve();
     return Notebooks.getAll().then((response) => {
       commit('setNotebooks', {notebooks: response});
     });

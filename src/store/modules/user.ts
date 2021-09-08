@@ -36,20 +36,20 @@ const actions = {
       });
   },
 
-  logout({commit}: { commit: any }, payload = {path: '/login'}) {
+  logout({commit}: { commit: any }) {
     return Auth.logout()
       .then(() => {
         commit('setUser', {user: null});
-        router.push(payload).then();
+        router.replace({path:'/login'}).then();
       });
   },
 
-  checkLogin({commit, state}: { commit: any, state: any }, payload = {path: '/login'}) {
+  checkLogin({commit, state}: { commit: any, state: any }, payload:{path:string} = {path: '/'}) {
     if (state.user !== null) return Promise.resolve();
     return Auth.getInfo()
       .then(response => {
         if (!response.isLogin) {
-          router.push(payload).then();
+          router.replace(payload).then();
         } else {
           commit('setUser', {user: response.data});
         }

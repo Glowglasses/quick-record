@@ -3,16 +3,16 @@ import {note, notes} from '@/helpers/noteType';
 import {Message} from 'element-ui';
 
 type state = {
-  notes: note[],
+  notes: any,
   currentNoteId: any
 }
 const state = {
-  notes: [],
+  notes: null,
   currentNoteId: undefined
 };
 
 const getters = {
-  notes: (state: state) => state.notes || [],
+  notes: (state: state) => state.notes || {},
   currentNote: (state: state) => {
     if (!Array.isArray(state.notes)) return {title: '', content: ''};
     if (!state.currentNoteId) return state.notes[0] || {title: '', content: ''};
@@ -30,24 +30,24 @@ const mutations = {
   },
 
   updateNote(state: state, payload: { noteId: number, title: string, content: string }) {
-    const note = state.notes.find(note => note.id === payload.noteId) || undefined;
+    const note = state.notes.find((note: note) => note.id === payload.noteId) || undefined;
     if (!note) return;
     note.title = payload.title;
     note.content = payload.content;
   },
 
   deleteNote(state: state, payload: { noteId: number }) {
-    state.notes = state.notes.filter(note => note.id !== payload.noteId);
+    state.notes = state.notes.filter((note: note) => note.id !== payload.noteId);
   },
 
   setCurrentNote(state: state, payload: { currentNoteId: number }) {
     if (payload) state.currentNoteId = payload.currentNoteId;
-
   }
 };
 
 const actions = {
-  getNotes({commit}: { commit: any }, {notebookId}: { notebookId: number }) {
+  getNotes({commit, state}: { commit: any,state: any }, {notebookId}: { notebookId: number }) {
+    if (state.currentBookId === notebookId ) return Promise.resolve()
     return Note.getAll({notebookId})
       .then(response => {
         commit('setNote', {notes: response});
