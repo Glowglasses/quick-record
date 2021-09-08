@@ -8,8 +8,8 @@ type state = {
   currentBookId: any
 }
 const state: state = {
-  notebooks: null,
-  currentBook: undefined,
+  notebooks: {},
+  currentBook: null,
   currentBookId: undefined
 };
 
@@ -37,14 +37,13 @@ const mutations = {
   deleteNotebook(state: state, payload: { notebookId: number }) {
     if (state && state.notebooks) state.notebooks = state.notebooks.filter((notebook: notebook) => notebook.id != payload.notebookId);
   },
-  setCurrentBook(state: state, payload: { currentBookId: number }) {
+  setCurrentBook(state: state, payload: { [props: string]: number } = {}) {
     state.currentBookId = payload.currentBookId;
   }
 };
 
 const actions = {
-  getNotebooks({commit, state}: { commit: any, state: state }) {
-    if (state.notebooks !== null) return Promise.resolve();
+  getNotebooks({commit}: { commit: any, state: state }) {
     return Notebooks.getAll().then((response) => {
       commit('setNotebooks', {notebooks: response});
     });
