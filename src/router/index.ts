@@ -1,9 +1,5 @@
 import Vue from 'vue';
 import VueRouter, {RouteConfig} from 'vue-router';
-import NotebookList from '@/components/NotebookList.vue';
-import Login from '@/views/Login.vue';
-import NoteDetail from '@/components/NoteDetail.vue';
-import TrashDetail from '@/components/TrashDetail.vue';
 
 Vue.use(VueRouter);
 
@@ -11,19 +7,19 @@ const routes: Array<RouteConfig> = [
   {
     path: '/',
     alias: '/notebooks',
-    component: NotebookList
+    component: () => import('@/components/NotebookList.vue')
   },
   {
     path: '/login',
-    component: Login
+    component: () => import('@/views/Login.vue')
   },
   {
     path: '/note',
-    component: NoteDetail
+    component: () => import('@/components/NoteDetail.vue')
   },
   {
     path: '/trash',
-    component: TrashDetail
+    component: () => import('@/components/TrashDetail.vue')
   }
 ];
 
