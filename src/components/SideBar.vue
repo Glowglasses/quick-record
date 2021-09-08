@@ -2,16 +2,25 @@
   <div class="wrapper" ref="wrapper">
     <Avatar class="avatar"/>
     <router-link to="/note" active-class="selected">
-      <i class="el-icon-notebook-1">笔记</i>
+      <div>
+        <i class="el-icon-notebook-1"></i>
+        <div>笔记</div>
+      </div>
     </router-link>
     <router-link to="/notebooks" active-class="selected">
-      <i class="el-icon-notebook-2">笔记本</i>
+      <div>
+        <i class="el-icon-notebook-2"></i>
+        <div>笔记本</div>
+      </div>
     </router-link>
     <router-link to="/trash" active-class="selected">
-      <i class="el-icon-delete-solid">回收站</i>
+      <div>
+        <i class="el-icon-delete-solid"></i>
+        <div>回收站</div>
+      </div>
     </router-link>
     <div class="logout" @click="onLogout">
-      <i>退出</i>
+      退出
     </div>
   </div>
 </template>
