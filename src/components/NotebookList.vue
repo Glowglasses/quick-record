@@ -48,10 +48,10 @@ import {getInfo} from '@/helpers/authType';
   ])
 })
 export default class NotebookList extends Vue {
-  checkLogin!: () => Promise<getInfo>;
+  checkLogin!: ({path}:{path:string}) => Promise<getInfo>;
 
   created() {
-    this.checkLogin().then(() => {
+    this.checkLogin({path:'login'}).then(() => {
       this.getNotebooks();
     });
   }
