@@ -28,7 +28,6 @@
 <script lang="ts">
 import Vue from 'vue';
 import Component from 'vue-class-component';
-import Auth from '@/apis/auth';
 import {notebook} from '@/helpers/notebookType';
 import {MessageBox} from 'element-ui';
 import {MessageBoxInputData} from 'element-ui/types/message-box';
@@ -51,9 +50,9 @@ export default class NotebookList extends Vue {
   checkLogin!: ({path}:{path:string}) => Promise<getInfo>;
 
   created() {
-    this.checkLogin({path:'login'}).then(() => {
+    this.checkLogin({path:'/login'}).then(() => {
       this.getNotebooks();
-    });
+    })
   }
 
   getNotebooks!: () => Promise<void>;

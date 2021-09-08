@@ -29,13 +29,12 @@
 import Vue from 'vue';
 import {Component} from 'vue-property-decorator';
 import Avatar from '@/components/Avatar.vue';
-import auth from '@/apis/auth';
 import {Message} from 'element-ui';
 import {mapActions} from 'vuex';
 
 @Component({
   components: {Avatar},
-  methods: mapActions(['logout'])
+  methods: mapActions(['logout']),
 })
 export default class slideBar extends Vue {
   mounted() {
