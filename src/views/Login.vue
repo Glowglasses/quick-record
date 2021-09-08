@@ -34,7 +34,6 @@
 <script lang="ts">
 import Vue from 'vue';
 import Component from 'vue-class-component';
-import Auth from '@/apis/auth';
 import {mapActions} from 'vuex';
 
 @Component({
@@ -48,10 +47,10 @@ export default class Login extends Vue {
   register = {username: '', password: '', notice: '创建账号后，请记住用户名和密码', isError: false};
   userRegister!: ({username, password}: { username: string, password: string }) => Promise<void>;
   userLogin!: ({username, password}: { username: string, password: string }) => Promise<void>;
-  checkLogin!: () => Promise<void>;
+  checkLogin!: ({path}:{path:string}) => Promise<void>;
 
   created() {
-    this.checkLogin();
+    this.checkLogin({path:"/login"});
   }
 
   showLogin() {
