@@ -47,10 +47,10 @@ export default class Login extends Vue {
   register = {username: '', password: '', notice: '创建账号后，请记住用户名和密码', isError: false};
   userRegister!: ({username, password}: { username: string, password: string }) => Promise<void>;
   userLogin!: ({username, password}: { username: string, password: string }) => Promise<void>;
-  checkLogin!: ({path}:{path:string}) => Promise<void>;
+  checkLogin!: ({path}: { path: string }) => Promise<void>;
 
   created() {
-    this.checkLogin({path:"/login"});
+    this.checkLogin({path: '/login'});
   }
 
   showLogin() {
@@ -130,7 +130,7 @@ export default class Login extends Vue {
 
   .main {
     flex: 1;
-    background: #36bc64 url(//cloud.hunger-valley.com/17-12-13/38476998.jpg-middle) center center no-repeat;
+    background: #36bc64 url('~@/../public/img/login/img.pndg') center center no-repeat;
     background-size: contain;
   }
 
