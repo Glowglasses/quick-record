@@ -45,7 +45,7 @@ export default class NoteSidebar extends Vue {
   setCurrentBook!: ({currentBookId}: { currentBookId: any }) => void;
   addNote!: ({notebookId}: { notebookId: number }) => Promise<void>;
   getNotes!: ({notebookId}: { notebookId: number }) => Promise<void>;
-  notes!: note[]
+  notes!: note[];
   currentBook!: notebook;
 
   created() {
@@ -54,20 +54,34 @@ export default class NoteSidebar extends Vue {
       return this.getNotes({notebookId: this.currentBook.id});
     }).then(() => {
       this.$store.commit('setCurrentNote', this.$route.query.noteId);
+      this.$router.replace({
+        path: '/note',
+        query: {'noteId': this.notes[0].id + '', 'notebookId': this.currentBook.id + ''}
+      });
     });
   }
+
 
   handleCommand(notebookId: string) {
     if (notebookId === 'trash') {
       return this.$router.push({path: '/trash'});
     }
     this.setCurrentBook({currentBookId: notebookId});
-    // this.getNotes({notebookId: parseInt(notebookId)});
-    this.$router.replace({path: '/note', query: {'noteId': this.notes[0].id + '','notebookId': this.currentBook.id + ''}});
+    this.getNotes({notebookId: parseInt(notebookId)}).then(() => {
+      this.$router.replace({
+        path: '/note',
+        query: {'noteId': this.notes[0].id + '', 'notebookId': this.currentBook.id + ''}
+      });
+    });
   }
 
   onAddNote() {
-    this.addNote({notebookId: this.currentBook.id});
+    this.addNote({notebookId: this.currentBook.id}).then(() => {
+      this.$router.replace({
+        path: '/note',
+        query: {'noteId': this.notes[0].id + '', 'notebookId': this.currentBook.id + ''}
+      });
+    });
   }
 }
 </script>
