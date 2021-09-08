@@ -130,7 +130,7 @@ export default class Login extends Vue {
 
   .main {
     flex: 1;
-    background: #36bc64 url('~@/../public/img/login/img.pndg') center center no-repeat;
+    background: #36bc64 url('~@/../public/img/login/img.png') center center no-repeat;
     background-size: contain;
   }
 
