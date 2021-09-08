@@ -40,16 +40,16 @@ const actions = {
     return Auth.logout()
       .then(() => {
         commit('setUser', {user: null});
-        router.replace({path:'/login'}).then();
+        router.replace({path: '/login'}).then();
       });
   },
 
-  checkLogin({commit, state}: { commit: any, state: any }, payload:{path:string} = {path: '/'}) {
+  checkLogin({commit, state}: { commit: any, state: any }, payload: { path: string } = {path: '/'}) {
     if (state.user !== null) return Promise.resolve();
     return Auth.getInfo()
       .then(response => {
         if (!response.isLogin) {
-          router.replace(payload).then();
+          router.replace(payload).catch(() => {return;});
         } else {
           commit('setUser', {user: response.data});
         }
