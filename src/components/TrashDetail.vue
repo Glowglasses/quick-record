@@ -45,7 +45,9 @@ import {Message, MessageBox} from 'element-ui';
 
 const MarkdownIt = require('markdown-it');
 const md = new MarkdownIt();
-
+Component.registerHooks([
+  'beforeRouteUpdate',
+]);
 @Component({
   methods: {...mapActions(['checkLogin', 'getTrashNotes', 'revertTrashNote', 'deleteTrashNote', 'getNotebooks']), ...mapMutations(['setCurrentTrashNote'])},
   computed: mapGetters(['trashNotes', 'currentTrashNote', 'belongTo'])
@@ -63,9 +65,14 @@ export default class TrashDetail extends Vue {
   created() {
     this.checkLogin({path: 'login'});
     this.getTrashNotes().then(() => {
-      this.getNotebooks();
-      this.setCurrentTrashNote({currentTrashNoteId: this.$route.query.noteId + ''});
-      this.$router.replace({query: {noteId: this.currentTrashNote.id + ''}}).catch(() => {return});
+      this.getNotebooks().then(() => {
+        if (this.$route.query.noteId) {
+          this.setCurrentTrashNote({currentTrashNoteId: this.$route.query.noteId + ''});
+        } else {
+          this.setCurrentTrashNote();
+        }
+        this.$router.replace({query: {noteId: this.currentTrashNote.id + ''}}).catch(() => {return;});
+      });
     });
   }
 
@@ -74,12 +81,14 @@ export default class TrashDetail extends Vue {
   }
 
   onDelete() {
+    if (this.trashNotes.length < 1) return;
     MessageBox.confirm('此操作将永久删除该文件, 是否继续?', '提示', {
       confirmButtonText: '确定',
       cancelButtonText: '取消',
       type: 'warning'
     }).then(() => {
-      this.deleteTrashNote({noteId: this.currentTrashNote.id});
+      return this.deleteTrashNote({noteId: this.currentTrashNote.id});
+    }).then(() => {
       this.setCurrentTrashNote();
       this.$router.replace({path: '/trash', query: {noteId: this.currentTrashNote.id + ''}});
     }).catch(() => {
@@ -91,9 +100,11 @@ export default class TrashDetail extends Vue {
   }
 
   onRevert() {
-    this.revertTrashNote({noteId: this.currentTrashNote.id});
-    this.setCurrentTrashNote();
-    this.$router.replace({path: 'trash', query: {noteId: this.currentTrashNote.id + ''}});
+    if (this.trashNotes.length < 1) return;
+    this.revertTrashNote({noteId: this.currentTrashNote.id}).then(() => {
+      this.setCurrentTrashNote();
+      this.$router.replace({path: 'trash', query: {noteId: this.currentTrashNote.id + ''}});
+    });
   }
 
   beforeRouteUpdate(to: any, from: any, next: any) {
