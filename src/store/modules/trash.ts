@@ -9,7 +9,7 @@ type state = {
 }
 const state: state = {
   trashNotes: null,
-  currentTrashNoteId: null
+  currentTrashNoteId: undefined
 };
 
 const getters = {
@@ -21,8 +21,9 @@ const getters = {
   },
 
   belongTo: (state: state, getters: any, rootState: any, rootGetters: any) => {
-    if (!rootGetters.notebooks) return;
-    const notebook = rootGetters.notebooks.find((notebook: notebook) => notebook.id == getters.currentTrashNote.notebookId) || {};
+    rootState = JSON.parse(JSON.stringify(rootState));
+    if (!rootGetters.notebooks || !state.currentTrashNoteId) return;
+    const notebook = rootState.notebook.notebooks.find((notebook: notebook) => notebook.id == getters.currentTrashNote.notebookId) || {};
     return notebook.title || '';
   }
 };
@@ -30,10 +31,6 @@ const getters = {
 const mutations = {
   setTrashNotes(state: state, payload: { trashNotes: note[] }) {
     state.trashNotes = payload.trashNotes;
-  },
-
-  addTrashNote(state: state, payload: { note: note }) {
-    state.trashNotes.unshift(payload.note);
   },
 
   deleteTrashNote(state: any, payload: { noteId: number }) {
@@ -47,7 +44,7 @@ const mutations = {
 };
 
 const actions = {
-  getTrashNotes({commit}: { commit: any }) {
+  getTrashNotes({commit, state}: { commit: any, state: any }) {
     return Trash.getAll()
       .then(response => {
         commit('setTrashNotes', {trashNotes: response.data});
