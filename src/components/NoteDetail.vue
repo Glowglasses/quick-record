@@ -46,7 +46,7 @@ Component.registerHooks([
 ]);
 @Component({
   computed: mapGetters(['notes', 'currentNote', 'currentBook']),
-  methods: {...mapActions(['updateNote', 'deleteNote', 'checkLogin']),...mapMutations(['setCurrentNote'])},
+  methods: {...mapActions(['updateNote', 'deleteNote', 'checkLogin']), ...mapMutations(['setCurrentNote', ])},
   components: {NoteSidebar},
 })
 export default class NoteDetail extends Vue {
@@ -55,7 +55,7 @@ export default class NoteDetail extends Vue {
   updateNote!: ({noteId, title, content}: { noteId: number, title: string, content: string }) => Promise<void>;
   deleteNote!: ({noteId}: { noteId: number }) => Promise<void>;
   checkLogin!: ({path}: { path: string }) => Promise<void>;
-  setCurrentNote!: () => void
+  setCurrentNote!: ({noteId}?: { noteId: string }) => void;
   notes!: note[];
   currentNote!: note;
   timer: any = null;
@@ -100,8 +100,11 @@ export default class NoteDetail extends Vue {
 
   onDeleteNote() {
     this.deleteNote({noteId: this.currentNote.id}).then(() => {
-      this.setCurrentNote()
-      this.$router.replace({path: '/note',query:{noteId:this.currentNote.id+ '',notebookId: this.currentBook.id + ''}});
+      this.setCurrentNote();
+      this.$router.replace({
+        path: '/note',
+        query: {noteId: this.currentNote.id + '', notebookId: this.currentBook.id + ''}
+      });
     });
   }
 
