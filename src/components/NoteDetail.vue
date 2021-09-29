@@ -32,21 +32,17 @@
 import Vue from 'vue';
 import Component from 'vue-class-component';
 import NoteSidebar from '@/components/NoteSidebar.vue';
-import {note} from '@/helpers/noteType';
+import {Note} from '@/helpers/noteType';
 import {mapActions, mapGetters, mapMutations} from 'vuex';
-import {notebook} from '@/helpers/notebookType';
+import {Notebook} from '@/helpers/notebookType';
+import marked from 'marked';
 
-const md = require('markdown-it')({
-  html: true,
-  linkify: true,
-  typographer: true,
-});
 Component.registerHooks([
   'beforeRouteUpdate',
 ]);
 @Component({
   computed: mapGetters(['notes', 'currentNote', 'currentBook']),
-  methods: {...mapActions(['updateNote', 'deleteNote', 'checkLogin']), ...mapMutations(['setCurrentNote', ])},
+  methods: {...mapActions(['updateNote', 'deleteNote', 'checkLogin']), ...mapMutations(['setCurrentNote',])},
   components: {NoteSidebar},
 })
 export default class NoteDetail extends Vue {
@@ -56,10 +52,10 @@ export default class NoteDetail extends Vue {
   deleteNote!: ({noteId}: { noteId: number }) => Promise<void>;
   checkLogin!: ({path}: { path: string }) => Promise<void>;
   setCurrentNote!: ({noteId}?: { noteId: string }) => void;
-  notes!: note[];
-  currentNote!: note;
+  notes!: Note[];
+  currentNote!: Note;
   timer: any = null;
-  currentBook!: notebook;
+  currentBook!: Notebook;
   isEdit = true;
 
   beforeRouteUpdate(to: any, from: any, next: any) {
@@ -80,7 +76,7 @@ export default class NoteDetail extends Vue {
   }
 
   get previewContent() {
-    return md.render(this.currentNote.content || '');
+    return marked(this.currentNote.content || '');
   }
 
   onUpdateNote() {

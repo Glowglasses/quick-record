@@ -32,8 +32,8 @@ import Vue from 'vue';
 import Component from 'vue-class-component';
 import {DropdownItem, DropdownMenu, Dropdown} from 'element-ui';
 import {mapActions, mapGetters, mapMutations} from 'vuex';
-import {notebook} from '@/helpers/notebookType';
-import {note} from '@/helpers/noteType';
+import {Notebook} from '@/helpers/notebookType';
+import {Note} from '@/helpers/noteType';
 
 @Component({
   computed: mapGetters(['currentBook', 'notes', 'notebooks', 'currentNote']),
@@ -45,9 +45,9 @@ export default class NoteSidebar extends Vue {
   setCurrentBook!: ({currentBookId}: { currentBookId: any }) => void;
   addNote!: ({notebookId}: { notebookId: number }) => Promise<void>;
   getNotes!: ({notebookId}: { notebookId: number }) => Promise<void>;
-  notes!: note[];
-  currentBook!: notebook;
-  currentNote!: note;
+  notes!: Note[];
+  currentBook!: Notebook;
+  currentNote!: Note;
 
   created() {
     this.getNotebooks().then(() => {

@@ -43,7 +43,7 @@ export default class Login extends Vue {
   isShowLogin = true;
   isShowRegister = false;
   isVisibleLogin = true;
-  login = {username: '', password: '', notice: '输入用户名和密码', isError: false};
+  login = {username: '2333', password: '123456', notice: '输入用户名和密码', isError: false};
   register = {username: '', password: '', notice: '创建账号后，请记住用户名和密码', isError: false};
   userRegister!: ({username, password}: { username: string, password: string }) => Promise<void>;
   userLogin!: ({username, password}: { username: string, password: string }) => Promise<void>;

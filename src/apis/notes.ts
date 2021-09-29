@@ -1,6 +1,6 @@
 import request from '@/helpers/request';
 import {friendlyDate} from '@/helpers/util';
-import {createNote, deleteNote, notes, updateNote} from '@/helpers/noteType';
+import {CreateNote, DeleteNote, Notes, UpdateNote} from '@/helpers/noteType';
 
 const URL = {
   GET: '/notes/from/:notebookId',
@@ -10,9 +10,9 @@ const URL = {
 };
 
 export default {
-  getAll({notebookId}: { notebookId: number }): Promise<notes> {
+  getAll({notebookId}: { notebookId: number }): Promise<Notes> {
     return new Promise((resolve, reject) => {
-      request<notes>(URL.GET.replace(':notebookId', notebookId + ''))
+      request<Notes>(URL.GET.replace(':notebookId', notebookId + ''))
         .then(response => {
           response.data = response.data.map(note => {
             note.createdAtFriendly = friendlyDate(note.createdAt);
@@ -29,19 +29,19 @@ export default {
   },
 
   updateNote({noteId}: { noteId: number }, {title, content}: { title: string, content: string }) {
-    return request<updateNote>(URL.UPDATE.replace(':noteId', noteId + ''), 'PATCH', {title, content});
+    return request<UpdateNote>(URL.UPDATE.replace(':noteId', noteId + ''), 'PATCH', {title, content});
   },
 
   deleteNote({noteId}: { noteId: number }) {
-    return request<deleteNote>(URL.DELETE.replace(':noteId', noteId + ''), 'DELETE');
+    return request<DeleteNote>(URL.DELETE.replace(':noteId', noteId + ''), 'DELETE');
   },
 
   addNote({notebookId}: { notebookId: number }, {title = '', content = ''} = {
     title: '',
     content: ''
-  }): Promise<createNote> {
+  }): Promise<CreateNote> {
     return new Promise((resolve, reject) => {
-      request<createNote>(URL.ADD.replace(':notebookId', notebookId + ''), 'POST', {title, content})
+      request<CreateNote>(URL.ADD.replace(':notebookId', notebookId + ''), 'POST', {title, content})
         .then(response => {
           if (!response.data) return;
           response.data.createdAtFriendly = friendlyDate(response.data.createdAt);

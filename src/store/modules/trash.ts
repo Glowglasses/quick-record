@@ -1,7 +1,7 @@
 import Trash from '@/apis/trash';
 import {Message} from 'element-ui';
-import {note} from '@/helpers/noteType';
-import {notebook} from '@/helpers/notebookType';
+import {Note} from '@/helpers/noteType';
+import {Notebook} from '@/helpers/notebookType';
 
 type state = {
   trashNotes: any
@@ -17,24 +17,24 @@ const getters = {
 
   currentTrashNote: (state: state, getters: any) => {
     if (!state.currentTrashNoteId) return getters.trashNotes[0] || {};
-    return state.trashNotes.find((note: note) => note.id == state.currentTrashNoteId) || {};
+    return state.trashNotes.find((note: Note) => note.id == state.currentTrashNoteId) || {};
   },
 
   belongTo: (state: state, getters: any, rootState: any, rootGetters: any) => {
     rootState = JSON.parse(JSON.stringify(rootState));
     if (!rootGetters.notebooks || !state.currentTrashNoteId) return;
-    const notebook = rootState.notebook.notebooks.find((notebook: notebook) => notebook.id == getters.currentTrashNote.notebookId) || {};
+    const notebook = rootState.notebook.notebooks.find((notebook: Notebook) => notebook.id == getters.currentTrashNote.notebookId) || {};
     return notebook.title || '';
   }
 };
 
 const mutations = {
-  setTrashNotes(state: state, payload: { trashNotes: note[] }) {
+  setTrashNotes(state: state, payload: { trashNotes: Note[] }) {
     state.trashNotes = payload.trashNotes;
   },
 
   deleteTrashNote(state: any, payload: { noteId: number }) {
-    state.trashNotes = state.trashNotes.filter((note: note) => note.id != payload.noteId);
+    state.trashNotes = state.trashNotes.filter((note: Note) => note.id != payload.noteId);
   },
 
   setCurrentTrashNote(state: any, payload: { [props: string]: string } = {}) {

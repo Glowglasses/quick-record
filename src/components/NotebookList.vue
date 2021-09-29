@@ -28,11 +28,11 @@
 <script lang="ts">
 import Vue from 'vue';
 import Component from 'vue-class-component';
-import {notebook} from '@/helpers/notebookType';
+import {Notebook} from '@/helpers/notebookType';
 import {MessageBox} from 'element-ui';
 import {MessageBoxInputData} from 'element-ui/types/message-box';
 import {mapActions, mapGetters} from 'vuex';
-import {getInfo} from '@/helpers/authType';
+import {GetInfo} from '@/helpers/authType';
 
 @Component({
   computed: mapGetters([
@@ -47,7 +47,7 @@ import {getInfo} from '@/helpers/authType';
   ])
 })
 export default class NotebookList extends Vue {
-  checkLogin!: ({path}:{path:string}) => Promise<getInfo>;
+  checkLogin!: ({path}:{path:string}) => Promise<GetInfo>;
 
   created() {
     this.checkLogin({path:'/login'}).then(() => {
@@ -73,7 +73,7 @@ export default class NotebookList extends Vue {
     });
   }
 
-  onEdit(notebook: notebook) {
+  onEdit(notebook: Notebook) {
     let title = '';
     MessageBox.prompt('输入新笔记本标题', '修改笔记本', {
       confirmButtonText: '确定',
@@ -88,7 +88,7 @@ export default class NotebookList extends Vue {
     });
   }
 
-  onDelete(notebook: notebook) {
+  onDelete(notebook: Notebook) {
     MessageBox.confirm('确认要删除笔记本吗', '删除笔记本', {
       confirmButtonText: '确定',
       cancelButtonText: '取消',

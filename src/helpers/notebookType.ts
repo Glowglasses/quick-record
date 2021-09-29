@@ -1,4 +1,4 @@
-﻿export type notebook = {
+﻿export type Notebook = {
   id: number
   title: string
   userId:number
@@ -8,19 +8,19 @@
   friendlyCreatedAt?: string
   friendlyUpdatedAt?: string
 }
-export type notebooks = {
-  data: notebook[]
+export type Notebooks = {
+  data: Notebook[]
 }
 
-export type createNotebook = {
+export type CreateNotebook = {
   msg: string
-  data: notebook
+  data: Notebook
 }
 
-export type updateNotebook = {
+export type UpdateNotebook = {
   msg: string
 }
 
-export type deleteNotebook = {
+export type DeleteNotebook = {
   msg: string
 }

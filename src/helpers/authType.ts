@@ -1,24 +1,24 @@
-export type user = {
+export type User = {
   id: number
   username: string
   updatedAt: string
   createdAt: string
 }
-export type register = {
+export type Register = {
   msg: string
-  data: user
+  data: User
 }
 
-export type getInfo = {
+export type GetInfo = {
   isLogin: boolean
-  data?: user
+  data?: User
 }
 
-export type logout = {
+export type Logout = {
   msg: string
 }
 
-export type login = {
+export type Login = {
   msg: string
-  data?: user
+  data?: User
 }

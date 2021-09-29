@@ -1,4 +1,4 @@
-export type note = {
+export type Note = {
   isDelete: boolean
   id: number
   title: string
@@ -9,28 +9,28 @@ export type note = {
   createdAtFriendly?: string
   updatedAtFriendly?: string
 }
-export type createNote = {
+export type CreateNote = {
   msg: string
-  data?: note
+  data?: Note
 }
 
-export type notes = {
-  data: note[]
+export type Notes = {
+  data: Note[]
 }
 
-export type deleteNote = {
-  msg: string
-}
-
-export type updateNote  = {
+export type DeleteNote = {
   msg: string
 }
 
-export type revertNote = {
+export type UpdateNote = {
   msg: string
 }
 
-export type trash = {
+export type RevertNote = {
+  msg: string
+}
+
+export type Trash = {
   msg?: string
-  data:note[]
+  data:Note[]
 }

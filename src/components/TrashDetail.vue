@@ -40,11 +40,9 @@
 import Vue from 'vue';
 import {Component} from 'vue-property-decorator';
 import {mapActions, mapGetters, mapMutations} from 'vuex';
-import {note} from '@/helpers/noteType';
+import {Note} from '@/helpers/noteType';
 import {Message, MessageBox} from 'element-ui';
-
-const MarkdownIt = require('markdown-it');
-const md = new MarkdownIt();
+import marked from 'marked';
 Component.registerHooks([
   'beforeRouteUpdate',
 ]);
@@ -57,8 +55,8 @@ export default class TrashDetail extends Vue {
   getTrashNotes!: () => Promise<void>;
   getNotebooks!: () => Promise<void>;
   deleteTrashNote!: ({noteId}: { noteId: number }) => Promise<void>;
-  trashNotes!: note[];
-  currentTrashNote!: note;
+  trashNotes!: Note[];
+  currentTrashNote!: Note;
   revertTrashNote!: ({noteId}: { noteId: number }) => Promise<void>;
   setCurrentTrashNote!: ({currentTrashNoteId}?: { currentTrashNoteId: string }) => void;
 
@@ -77,7 +75,7 @@ export default class TrashDetail extends Vue {
   }
 
   get compiledMarkdown() {
-    return md.render(this.currentTrashNote.content || '');
+    return marked(this.currentTrashNote.content || '');
   }
 
   onDelete() {

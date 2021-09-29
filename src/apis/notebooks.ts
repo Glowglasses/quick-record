@@ -1,6 +1,6 @@
 import request from '@/helpers/request';
 import {friendlyDate} from '@/helpers/util';
-import {createNotebook, deleteNotebook, notebooks, updateNotebook} from '@/helpers/notebookType';
+import {CreateNotebook, DeleteNotebook, Notebooks, UpdateNotebook} from '@/helpers/notebookType';
 
 const URL = {
   GET: '/notebooks',
@@ -10,9 +10,9 @@ const URL = {
 };
 
 export default {
-  getAll(): Promise<notebooks> {
+  getAll(): Promise<Notebooks> {
     return new Promise((resolve, reject) => {
-      request<notebooks>(URL.GET)
+      request<Notebooks>(URL.GET)
         .then(response => {
           response.data = response.data.sort((notebook1, notebook2) => Date.parse(notebook2.createdAt) - Date.parse(notebook1.createdAt));
           response.data.forEach(notebook => {
@@ -27,16 +27,16 @@ export default {
   },
 
   updateNotebook(notebookId: number, {title = ''} = {title: ''}) {
-    return request<updateNotebook>(URL.UPDATE.replace(':id', notebookId + ''), 'PATCH', {title});
+    return request<UpdateNotebook>(URL.UPDATE.replace(':id', notebookId + ''), 'PATCH', {title});
   },
 
   deleteNotebook(notebookId: number) {
-    return request<deleteNotebook>(URL.DELETE.replace(':id', notebookId + ''), 'DELETE');
+    return request<DeleteNotebook>(URL.DELETE.replace(':id', notebookId + ''), 'DELETE');
   },
 
-  addNotebook({title = ''} = {title: ''}):Promise<createNotebook> {
+  addNotebook({title = ''} = {title: ''}):Promise<CreateNotebook> {
     return new Promise((resolve,reject) => {
-      request<createNotebook>(URL.ADD, 'POST', {title}).then((response) => {
+      request<CreateNotebook>(URL.ADD, 'POST', {title}).then((response) => {
         response.data.friendlyCreatedAt = friendlyDate(response.data.createdAt)
         response.data.friendlyUpdatedAt = friendlyDate(response.data.updatedAt)
         resolve(response)

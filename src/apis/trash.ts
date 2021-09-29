@@ -1,6 +1,6 @@
 import request from '@/helpers/request';
 import {friendlyDate} from '@/helpers/util';
-import {deleteNote, revertNote, trash} from '@/helpers/noteType';
+import {DeleteNote, RevertNote, Trash} from '@/helpers/noteType';
 
 const URL = {
   GET: '/notes/trash',
@@ -9,9 +9,9 @@ const URL = {
 };
 
 export default {
-  getAll(): Promise<trash> {
+  getAll(): Promise<Trash> {
     return new Promise((resolve, reject) => {
-      request<trash>(URL.GET)
+      request<Trash>(URL.GET)
         .then(response => {
           response.data = response.data.sort((note1, note2) => Date.parse(note2.updatedAt) - Date.parse(note1.updatedAt));
           response.data.forEach(note => {
@@ -26,11 +26,11 @@ export default {
   },
 
   deleteNote({noteId}: { noteId: number }) {
-    return request<deleteNote>(URL.DELETE.replace(':noteId', noteId + ''), 'DELETE');
+    return request<DeleteNote>(URL.DELETE.replace(':noteId', noteId + ''), 'DELETE');
   },
 
   revertNote({noteId}: { noteId: number }) {
-    return request<revertNote>(URL.REVERT.replace(':noteId', noteId + ''), 'PATCH');
+    return request<RevertNote>(URL.REVERT.replace(':noteId', noteId + ''), 'PATCH');
   }
 
 };

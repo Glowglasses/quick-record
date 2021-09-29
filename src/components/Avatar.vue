@@ -8,7 +8,7 @@
 import Vue from 'vue';
 import Component from 'vue-class-component';
 import bus from '@/helpers/bus';
-import {login} from '@/helpers/authType';
+import {Login} from '@/helpers/authType';
 import {mapActions,mapGetters} from 'vuex';
 
 @Component({
@@ -20,7 +20,7 @@ export default class Avatar extends Vue {
   username!: string
   checkLogin!: () => Promise<void>
   created() {
-    bus.$on('update:username', (user: login) => {
+    bus.$on('update:username', (user: Login) => {
       if (user.data){
         this.username = user.data.username;
       }

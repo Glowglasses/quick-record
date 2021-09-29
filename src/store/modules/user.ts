@@ -1,5 +1,5 @@
 import Auth from '@/apis/auth';
-import {user} from '@/helpers/authType';
+import {User} from '@/helpers/authType';
 import router from '@/router';
 
 type state = {
@@ -16,7 +16,7 @@ const getters = {
 };
 
 const mutations = {
-  setUser(state: state, payload: { user: user }) {
+  setUser(state: state, payload: { user: User }) {
     state.user = payload.user;
   }
 };

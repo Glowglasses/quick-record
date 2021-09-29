@@ -1,5 +1,5 @@
 import request from '@/helpers/request'
-import {getInfo, login, logout, register} from '@/helpers/authType';
+import {GetInfo, Login, Logout, Register} from '@/helpers/authType';
 
 const URL = {
   REGISTER: '/auth/register',
@@ -15,18 +15,18 @@ type user = {
 
 export default {
   register(user: user) {
-    return request<register>(URL.REGISTER, 'POST', user)
+    return request<Register>(URL.REGISTER, 'POST', user)
   },
 
   login(user: user){
-    return request<login>(URL.LOGIN, 'POST', user)
+    return request<Login>(URL.LOGIN, 'POST', user)
   },
 
   logout() {
-    return request<logout>(URL.LOGOUT)
+    return request<Logout>(URL.LOGOUT)
   },
 
   getInfo() {
-    return request<getInfo>(URL.GET_INFO)
+    return request<GetInfo>(URL.GET_INFO)
   }
 }
